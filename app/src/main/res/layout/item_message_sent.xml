@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="end"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/tvPinned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📌 Başa Tutturuldu"
+        android:textSize="10sp"
+        android:textColor="#FFD700"
+        android:visibility="gone"
+        android:layout_marginBottom="2dp" />
+
+    <ImageView
+        android:id="@+id/ivPhoto"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:background="@drawable/bg_message_sent" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:background="@drawable/bg_message_sent"
+        android:textColor="#000"
+        android:maxWidth="280dp" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10sp"
+        android:textColor="#999"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>

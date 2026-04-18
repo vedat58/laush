@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "308202543234",
+    "project_id": "laush-17021",
+    "storage_bucket": "laush-17021.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:308202543234:android:382f9cc3902656ba073c9b",
+        "android_client_info": {
+          "package_name": "com.example.laush"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClgXIMxvYAlcNF1unYegCkJqNm6MZWrT8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

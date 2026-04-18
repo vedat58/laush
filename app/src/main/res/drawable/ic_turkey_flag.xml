@@ -1,0 +1,15 @@
+<vector xmlns:android="http://www.w3.org/2000/svg"
+    android:width="24dp"
+    android:height="16dp"
+    android:viewportWidth="24"
+    android:viewportHeight="16">
+    <path
+        android:fillColor="#E30A17"
+        android:pathData="M0,0h24v16H0z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10,3l6,5l-6,5z"/>
+    <path
+        android:fillColor="#E30A17"
+        android:pathData="M10,4.5l4.5,3.5l-4.5,3.5z"/>
+</vector>

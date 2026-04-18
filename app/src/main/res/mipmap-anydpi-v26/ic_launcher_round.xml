@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Background circle -->
+    <path
+        android:fillColor="#1A1A2E"
+        android:pathData="M54,54m-54,0a54,54 0,1 1,108 0a54,54 0,1 1,-108 0"/>
+    <!-- L shape -->
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M28,25 L28,83 L55,83 L55,50 L70,50 L70,25 Z"/>
+    <!-- Sparkle -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M75,25 L78,35 L88,35 L80,42 L83,52 L75,46 L67,52 L70,42 L62,35 L72,35 Z"/>
+</vector>
