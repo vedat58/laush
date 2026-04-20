@@ -109,14 +109,12 @@
         android:text="Takip Et"
         android:textSize="16sp" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/btnMessage"
         android:layout_width="200dp"
         android:layout_height="45dp"
         android:layout_marginTop="10dp"
         android:text="Mesaj Gönder"
-        android:textSize="16sp"
-        style="@style/Widget.Material3.Button.OutlinedButton"
-        app:strokeColor="#9C27B0" />
+        android:textSize="16sp" />
 
 </LinearLayout>

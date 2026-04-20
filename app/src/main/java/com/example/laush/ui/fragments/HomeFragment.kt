@@ -34,12 +34,12 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        adapter = PostAdapter(posts, { post ->
+        adapter = PostAdapter(posts, currentUserId = (activity as? HomeActivity)?.userId ?: "", onLikeClick = { post ->
             lifecycleScope.launch {
-                repo.likePost(post.id, (activity as? HomeActivity)?.userId ?: "")
+                repo.toggleLike(post.id, (activity as? HomeActivity)?.userId ?: "")
                 loadPosts()
             }
-        }, { post ->
+        }, onCommentClick = { post ->
             showComments(post)
         })
         
@@ -86,12 +86,12 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             // Only text posts
             posts = repo.getTextPosts()
-            adapter = PostAdapter(posts, { post ->
+            adapter = PostAdapter(posts, currentUserId = (activity as? HomeActivity)?.userId ?: "", onLikeClick = { post ->
                 lifecycleScope.launch {
-                    repo.likePost(post.id, (activity as? HomeActivity)?.userId ?: "")
+                    repo.toggleLike(post.id, (activity as? HomeActivity)?.userId ?: "")
                     loadPosts()
                 }
-            }, { post -> showComments(post) })
+            }, onCommentClick = { post -> showComments(post) })
             binding.rvPosts.adapter = adapter
         }
     }

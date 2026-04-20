@@ -12,6 +12,8 @@ data class User(
     val followers: Int = 0,
     val following: Int = 0,
     val posts: Int = 0,
+    val isMegaVerified: Boolean = false,
+    val theme: String = "blue",
     val createdAt: Long = System.currentTimeMillis()
 )
 
@@ -65,4 +67,23 @@ data class Notification(
     val message: String = "",
     val createdAt: Long = System.currentTimeMillis(),
     val read: Boolean = false
+)
+
+data class Story(
+    val id: String = "",
+    val userId: String = "",
+    val username: String = "",
+    val imageUrl: String? = null,
+    val videoUrl: String? = null,
+    val createdAt: Long = System.currentTimeMillis()
+)
+
+data class Poll(
+    val id: String = "",
+    val userId: String = "",
+    val username: String = "",
+    val question: String = "",
+    val options: List<String> = emptyList(),
+    val votes: List<Int> = emptyList(),
+    val createdAt: Long = System.currentTimeMillis()
 )

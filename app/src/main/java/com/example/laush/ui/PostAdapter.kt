@@ -1,6 +1,8 @@
 package com.example.laush.ui
 
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.laush.databinding.ItemPostBinding
@@ -11,8 +13,9 @@ import java.util.Locale
 
 class PostAdapter(
     private val posts: List<Post>,
-    private val onLikeClick: (Post) -> Unit,
-    private val onCommentClick: (Post) -> Unit
+    private val currentUserId: String = "",
+    private val onLikeClick: (Post) -> Unit = {},
+    private val onCommentClick: (Post) -> Unit = {}
 ) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
     inner class PostViewHolder(val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root)
@@ -33,6 +36,14 @@ class PostAdapter(
 
             btnLike.setOnClickListener { onLikeClick(post) }
             btnComment.setOnClickListener { onCommentClick(post) }
+
+            val gestureDetector = GestureDetector(root.context, object : android.view.GestureDetector.SimpleOnGestureListener() {
+                override fun onDoubleTap(e: MotionEvent): Boolean {
+                    onLikeClick(post)
+                    return true
+                }
+            })
+            root.setOnTouchListener { _, event -> gestureDetector.onTouchEvent(event); false }
         }
     }
 

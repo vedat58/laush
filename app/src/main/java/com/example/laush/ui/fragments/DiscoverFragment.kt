@@ -99,7 +99,7 @@ class DiscoverFragment : Fragment() {
                 showShareDialog(post)
             }, { post, comment ->
                 lifecycleScope.launch {
-                    repo.createComment(post.id, (activity as? HomeActivity)?.userId ?: "", comment)
+                    repo.addComment(post.id, (activity as? HomeActivity)?.userId ?: "", (activity as? HomeActivity)?.username ?: "", comment)
                     Toast.makeText(context, "Yorum eklendi", Toast.LENGTH_SHORT).show()
                 }
             })

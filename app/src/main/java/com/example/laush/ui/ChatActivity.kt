@@ -118,13 +118,13 @@ class ChatActivity : AppCompatActivity() {
                 }?.sortedByDescending { it.isPinned }
                     ?.sortedByDescending { it.createdAt } ?: emptyList()
 
-adapter = MessageAdapter(messages, currentUserId) { message ->
-                    // Kalp atıldığında
-                    Toast.makeText(this@ChatActivity, "❤️", Toast.LENGTH_SHORT).show()
-                } { message ->
-                    // Long press - pin/unpin
-                    showPinDialog(message)
-                }
+adapter = MessageAdapter(messages, currentUserId,
+                    onMessageDoubleTap = { message ->
+                        Toast.makeText(this@ChatActivity, "❤️", Toast.LENGTH_SHORT).show()
+                    },
+                    onMessageLongPress = { message ->
+                        showPinDialog(message)
+                    })
                 binding.rvMessages.adapter = adapter
                 binding.rvMessages.scrollToPosition(messages.size - 1)
             }
@@ -286,11 +286,13 @@ adapter = MessageAdapter(messages, currentUserId) { message ->
     private fun loadMessages() {
         lifecycleScope.launch {
             messages = repo.getMessages(chatRoomId)
-            adapter = MessageAdapter(messages, currentUserId) { msg ->
-                Toast.makeText(this@ChatActivity, "❤️", Toast.LENGTH_SHORT).show()
-            } { msg ->
-                showPinDialog(msg)
-            }
+            adapter = MessageAdapter(messages, currentUserId,
+                onMessageDoubleTap = { msg ->
+                    Toast.makeText(this@ChatActivity, "❤️", Toast.LENGTH_SHORT).show()
+                },
+                onMessageLongPress = { msg ->
+                    showPinDialog(msg)
+                })
             binding.rvMessages.adapter = adapter
         }
     }

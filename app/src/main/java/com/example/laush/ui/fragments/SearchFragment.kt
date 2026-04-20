@@ -15,6 +15,7 @@ import com.example.laush.data.FirebaseRepo
 import com.example.laush.databinding.FragmentSearchBinding
 import com.example.laush.model.User
 import com.example.laush.ui.UserAdapter
+import com.example.laush.ui.UserProfileDialog
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {

@@ -56,13 +56,14 @@ class UserProfileDialog(
 
         // Takip durumu
         homeActivity.lifecycleScope.launch {
-            val following = repo.getFollowing(currentUserId)
-            isFollowing = following.any { it.id == user.id }
+            val followingIds = repo.getFollowings(currentUserId)
+            isFollowing = followingIds.contains(user.id)
             updateFollowButton(binding)
         }
 
         binding.btnFollow.setOnClickListener {
             homeActivity.lifecycleScope.launch {
+                val newFollowerCount = user.followers
                 if (isFollowing) {
                     repo.unfollowUser(currentUserId, user.id)
                     isFollowing = false
@@ -71,8 +72,7 @@ class UserProfileDialog(
                     isFollowing = true
                 }
                 updateFollowButton(binding)
-                user.followers = if (isFollowing) user.followers + 1 else user.followers - 1
-                binding.tvFollowers.text = formatCount(user.followers)
+                binding.tvFollowers.text = formatCount(if (isFollowing) newFollowerCount + 1 else newFollowerCount - 1)
             }
         }
 

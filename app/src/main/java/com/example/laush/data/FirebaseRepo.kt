@@ -10,6 +10,8 @@ import com.example.laush.model.Comment
 import com.example.laush.model.ChatRoom
 import com.example.laush.model.Message
 import com.example.laush.model.Notification
+import com.example.laush.model.Story
+import com.example.laush.model.Poll
 import kotlinx.coroutines.tasks.await
 
 class FirebaseRepo {
@@ -320,11 +322,7 @@ class FirebaseRepo {
             emptyList()
         }
     }
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-    
+
     suspend fun deletePost(postId: String): Boolean {
         return try {
             db.collection("posts").document(postId).delete().await()
@@ -697,6 +695,162 @@ class FirebaseRepo {
             doc.getString("note")
         } catch (e: Exception) {
             null
+        }
+    }
+
+    // Stories
+    suspend fun createStory(imageUrl: String?, videoUrl: String?): Result<String> {
+        val userId = getCurrentUserId() ?: return Result.failure(Exception("Not logged in"))
+        val user = getUser(userId) ?: return Result.failure(Exception("User not found"))
+        return try {
+            val doc = db.collection("stories").document()
+            doc.set(mapOf(
+                "id" to doc.id,
+                "userId" to userId,
+                "username" to user.username,
+                "imageUrl" to imageUrl,
+                "videoUrl" to videoUrl,
+                "createdAt" to System.currentTimeMillis()
+            )).await()
+            Result.success(doc.id)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getStories(): List<Story> {
+        return try {
+            val userId = getCurrentUserId() ?: return emptyList()
+            val followings = getFollowings(userId)
+            val allUserIds = (followings + userId).distinct()
+
+            val stories = mutableListOf<Story>()
+            for (uid in allUserIds) {
+                val userStories = db.collection("stories")
+                    .whereEqualTo("userId", uid)
+                    .get()
+                    .await()
+                    .documents
+                    .filter { (System.currentTimeMillis() - (it.getLong("createdAt") ?: 0)) < 24 * 60 * 60 * 1000 }
+                    .map { doc ->
+                        Story(
+                            id = doc.id,
+                            userId = doc.getString("userId") ?: "",
+                            username = doc.getString("username") ?: "",
+                            imageUrl = doc.getString("imageUrl"),
+                            videoUrl = doc.getString("videoUrl"),
+                            createdAt = doc.getLong("createdAt") ?: 0
+                        )
+                    }
+                stories.addAll(userStories)
+            }
+            stories.sortedByDescending { it.createdAt }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    // Polls
+    suspend fun createPoll(question: String, options: List<String>): Result<String> {
+        val userId = getCurrentUserId() ?: return Result.failure(Exception("Not logged in"))
+        val user = getUser(userId) ?: return Result.failure(Exception("User not found"))
+        return try {
+            val doc = db.collection("polls").document()
+            doc.set(mapOf(
+                "id" to doc.id,
+                "userId" to userId,
+                "username" to user.username,
+                "question" to question,
+                "options" to options,
+                "votes" to options.map { 0 },
+                "createdAt" to System.currentTimeMillis()
+            )).await()
+            Result.success(doc.id)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun votePoll(pollId: String, optionIndex: Int): Result<Unit> {
+        return try {
+            db.collection("polls").document(pollId)
+                .update("votes", FieldValue.arrayUnion(optionIndex)).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getPolls(): List<Poll> {
+        return try {
+            db.collection("polls")
+                .get()
+                .await()
+                .documents
+                .map { doc ->
+                    Poll(
+                        id = doc.id,
+                        userId = doc.getString("userId") ?: "",
+                        username = doc.getString("username") ?: "",
+                        question = doc.getString("question") ?: "",
+                        options = (doc.get("options") as? List<*>)?.filterIsInstance<String>() ?: emptyList(),
+                        votes = (doc.get("votes") as? List<*>)?.mapNotNull { it as? Long }?.map { it.toInt() } ?: emptyList(),
+                        createdAt = doc.getLong("createdAt") ?: 0
+                    )
+                }
+                .sortedByDescending { it.createdAt }
+                .take(30)
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    // Heart/Like - Double tap
+    suspend fun toggleLike(postId: String, userId: String): Boolean {
+        return try {
+            val allLikes = db.collection("likes").get().await()
+            val existing = allLikes.documents.find {
+                it.getString("postId") == postId && it.getString("userId") == userId
+            }
+            if (existing != null) {
+                existing.reference.delete().await()
+                db.collection("posts").document(postId)
+                    .update("likes", FieldValue.increment(-1)).await()
+                false
+            } else {
+                db.collection("likes").document().set(mapOf(
+                    "postId" to postId,
+                    "userId" to userId,
+                    "createdAt" to System.currentTimeMillis()
+                )).await()
+                db.collection("posts").document(postId)
+                    .update("likes", FieldValue.increment(1)).await()
+                true
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    // Mega Tick
+    suspend fun setMegaVerified(userId: String, verified: Boolean): Result<Unit> {
+        return try {
+            db.collection("users").document(userId)
+                .update("isMegaVerified", verified).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // Theme
+    suspend fun setTheme(userId: String, theme: String): Result<Unit> {
+        return try {
+            db.collection("users").document(userId)
+                .update("theme", theme).await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
